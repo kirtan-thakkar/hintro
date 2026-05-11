@@ -45,8 +45,8 @@ const Dashboard = () => {
             <div className="flex flex-col min-h-screen overflow-hidden">
                 <Navbar />
                 <main className="flex-1 p-[30px] bg-white">
-                    <div className="w-full max-w-[1180px] mx-auto flex items-start justify-between">
-                        <div className="flex flex-col gap-1">
+                    <div className="w-full max-w-[1180px] mx-auto flex items-start justify-between px-8">
+                        <div className="flex flex-col gap-1 ">
                             <h2 className="text-[22px] font-bold text-gray-900 tracking-tight flex items-center">
                                 Hi, {userName} 👋 Welcome to Hintro
                             </h2>
@@ -60,7 +60,7 @@ const Dashboard = () => {
                         </Button>
                     </div>
 
-                    <div className="w-full max-w-[1180px] mx-auto mt-[30px]">
+                    <div className="w-full mt-[30px] px-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             {stats.map((stat, index) => (
                                 <StatCard 
