@@ -74,6 +74,29 @@ const Dashboard = () => {
                             ))}
                         </div>
                     </div>
+                    <div className="w-full mt-10 px-8 flex flex-col items-center">
+                        <h3 className="text-xl font-medium text-gray-900 mb-3.5">
+                            Recent calls
+                        </h3>
+                        
+                        <div className="w-full max-w-[802px] h-[219px] border border-neutral-200 rounded-2xl bg-white flex flex-col items-center justify-center p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+                            <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center mb-3">
+                                <Calendar className="w-5 h-5 text-indigo-500" />
+                            </div>
+                            
+                            <h4 className="text-md font-medium text-gray-900 mb-1.5">
+                                No Recent Calls
+                            </h4>
+                            
+                            <p className="text-[12px] text-gray-500 text-center max-w-[380px] leading-relaxed mb-5">
+                                Connect your Google Calendar to see upcoming meetings, get reminders, and join calls directly from Hintro.
+                            </p>
+                            
+                            <Button variant="outline" className="h-[34px] text-[12px] font-medium px-4">
+                                Start a Call
+                            </Button>
+                        </div>
+                    </div>
                 </main>
             </div>
         </div>
