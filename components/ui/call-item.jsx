@@ -10,19 +10,15 @@ export function CallItem({
 }) {
   return (
     <div className="w-full flex items-center justify-between py-3 px-4 border border-transparent hover:bg-gray-50 rounded-lg group transition-colors cursor-pointer">
-      {/* Left section: Icon + Title + Avatars */}
       <div className="flex items-center gap-3">
-        {/* User Initial Block */}
         <div className="w-8 h-8 rounded bg-[#A855F7] text-white flex flex-col items-center justify-center font-medium text-sm shrink-0">
           {initial}
         </div>
         
-        {/* Title and Participants */}
         <div className="flex flex-col gap-1">
           <span className="text-sm font-semibold text-gray-900 leading-none">{title}</span>
           
           <div className="flex -space-x-1">
-            {/* Mocking avatars for the "calls" component based on the screenshot */}
             <div className="w-4 h-4 rounded-full bg-gray-200 border border-white ring-1 ring-white shrink-0 flex items-center justify-center text-[8px] text-gray-500 overflow-hidden">
               <svg viewBox="0 0 24 24" className="w-3 h-3 text-gray-400" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             </div>
@@ -35,8 +31,7 @@ export function CallItem({
           </div>
         </div>
       </div>
-
-      {/* Right section: Time + Extra Info */}
+      
       <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
         <span>{time}</span>
         

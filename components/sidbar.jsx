@@ -9,7 +9,6 @@ import {
   Gift,
   Info,
 } from "lucide-react";
-import { Navbar } from "./navbar";
 
 export default function Sidebar() {
   const navItems = [
@@ -35,14 +34,14 @@ export default function Sidebar() {
   ];
 
   return (
-    <>
-      <Navbar />
-      <div className="w-[262px] h-screen bg-white border-r border-[#E2E2E8] flex flex-col font-sans shrink-0 divide-y divide-[#E2E2E8]">
-        <div className="w-full h-[65px] shrink-0 flex items-center justify-center">
-          <span className="text-xl font-bold text-gray-900">Hintro</span>
-        </div>
+    <div className="w-[262px] h-screen bg-white border-r border-[#E2E2E8] flex flex-col font-sans shrink-0 divide-y divide-[#E2E2E8]">
+      {/* Header */}
+      <div className="w-full h-[64px] shrink-0 flex items-center justify-center">
+        <span className="text-xl font-bold text-gray-900">Hintro</span>
+      </div>
 
-        <div className="flex-1 pt-[26px]">
+      {/* Main Navigation */}
+      <div className="flex-1 pt-[26px]">
           <nav className="pl-[30px] pr-[20px] flex flex-col gap-[6px]">
             {navItems.map((item) => (
               <SidebarItem key={item.href} {...item} />
@@ -57,8 +56,7 @@ export default function Sidebar() {
             Upgrade
           </button>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 
