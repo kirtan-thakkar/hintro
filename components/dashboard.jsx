@@ -1,36 +1,110 @@
+'use client';
+
 import Sidebar from "./sidbar"
 import { Navbar } from "./navbar"
 import { Button } from "./ui/button"
 import { StatCard } from "./ui/stat-card"
+import { CallItem } from "./ui/call-item"
 import { PieChart, Clock, Sparkles, Calendar } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
 
 const Dashboard = () => {
-    const userName = "{{Name}}";
+    const { data: session } = useSession();
+    const [loading, setLoading] = useState(true);
+    const [statsData, setStatsData] = useState(null);
+    const [callsData, setCallsData] = useState(null);
+    const [userName, setUserName] = useState("{{Name}}");
+
+    useEffect(() => {
+        if (!session?.user) return;
+
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                // Fetch profile to get user name
+                const profileRes = await fetch('/api/auth/profile', {
+                    headers: { 'x-user-id': session.user.id },
+                });
+                if (profileRes.ok) {
+                    const profile = await profileRes.json();
+                    setUserName(profile.firstName || "{{Name}}");
+                }
+
+                // Fetch stats
+                const statsRes = await fetch('/api/call-sessions/stats', {
+                    headers: { 'x-user-id': session.user.id },
+                });
+                if (statsRes.ok) {
+                    setStatsData(await statsRes.json());
+                }
+
+                // Fetch call history
+                const callsRes = await fetch('/api/call-sessions?limit=10', {
+                    headers: { 'x-user-id': session.user.id },
+                });
+                if (callsRes.ok) {
+                    setCallsData(await callsRes.json());
+                }
+            } catch (error) {
+                console.error('Failed to fetch dashboard data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [session?.user?.id]);
+
+    const formatDuration = (seconds) => {
+        if (!seconds) return "0s";
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        if (mins === 0) return `${secs}s`;
+        return `${mins}m ${secs}s`;
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) return "today";
+        if (diffDays === 1) return "1 day ago";
+        if (diffDays < 7) return `${diffDays} days ago`;
+        return date.toLocaleDateString();
+    };
+
+    const formatTime = (dateString) => {
+        return new Date(dateString).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    };
+
     const stats = [
         {
             title: "Total Sessions",
-            value: "0",
+            value: statsData?.totalSessions || "0",
             icon: PieChart,
             iconBgClass: "bg-red-100",
             iconColorClass: "text-red-500"
         },
         {
             title: "Average Duration",
-            value: "0",
+            value: statsData?.averageDuration ? formatDuration(statsData.averageDuration) : "0",
             icon: Clock,
             iconBgClass: "bg-cyan-100",
             iconColorClass: "text-cyan-500"
         },
         {
             title: "AI Used",
-            value: "0",
+            value: statsData?.totalAIInteractions || "0",
             icon: Sparkles,
             iconBgClass: "bg-green-100",
             iconColorClass: "text-green-500"
         },
         {
             title: "Last Session",
-            value: "-",
+            value: statsData?.lastSession?.[0] ? formatDate(statsData.lastSession[0]) : "-",
             icon: Calendar,
             iconBgClass: "bg-purple-100",
             iconColorClass: "text-purple-500"
@@ -75,27 +149,45 @@ const Dashboard = () => {
                         </div>
                     </div>
                     <div className="w-full mt-10 px-8 flex flex-col items-center">
-                        <h3 className="text-xl font-medium text-gray-900 mb-3.5">
+                        <h3 className="text-xl font-medium text-gray-900 mb-3.5 w-full max-w-[802px] text-center">
                             Recent calls
                         </h3>
                         
-                        <div className="w-full max-w-[802px] h-[219px] border border-neutral-200 rounded-2xl bg-white flex flex-col items-center justify-center p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-                            <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center mb-3">
-                                <Calendar className="w-5 h-5 text-indigo-500" />
+                        {loading ? (
+                            <div className="w-full max-w-[802px] h-[219px] border border-neutral-200 rounded-2xl bg-white flex items-center justify-center">
+                                <p className="text-gray-500">Loading...</p>
                             </div>
-                            
-                            <h4 className="text-md font-medium text-gray-900 mb-1.5">
-                                No Recent Calls
-                            </h4>
-                            
-                            <p className="text-[12px] text-gray-500 text-center max-w-[380px] leading-relaxed mb-5">
-                                Connect your Google Calendar to see upcoming meetings, get reminders, and join calls directly from Hintro.
-                            </p>
-                            
-                            <Button variant="outline" className="h-[34px] text-[12px] font-medium px-4">
-                                Start a Call
-                            </Button>
-                        </div>
+                        ) : callsData?.callSessions && callsData.callSessions.length > 0 ? (
+                            <div className="w-full max-w-[802px] space-y-2">
+                                {callsData.callSessions.map((call) => (
+                                    <CallItem
+                                        key={call._id}
+                                        initial={call.client?.[0] || "D"}
+                                        title={call.description || call.client}
+                                        time={formatTime(call.started_at)}
+                                        interactions={call.ai_interactions}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="w-full max-w-[802px] h-[219px] border border-neutral-200 rounded-2xl bg-white flex flex-col items-center justify-center p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+                                <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center mb-3">
+                                    <Calendar className="w-5 h-5 text-indigo-500" />
+                                </div>
+                                
+                                <h4 className="text-md font-medium text-gray-900 mb-1.5">
+                                    No Recent Calls
+                                </h4>
+                                
+                                <p className="text-[12px] text-gray-500 text-center max-w-[380px] leading-relaxed mb-5">
+                                    Connect your Google Calendar to see upcoming meetings, get reminders, and join calls directly from Hintro.
+                                </p>
+                                
+                                <Button variant="outline" className="h-[34px] text-[12px] font-medium px-4">
+                                    Start a Call
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </main>
             </div>
