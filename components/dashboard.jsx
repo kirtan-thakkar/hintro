@@ -8,6 +8,7 @@ import { CallItem } from "./ui/call-item"
 import { PieChart, Clock, Sparkles, Calendar } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
+import { useMediaQuery } from 'react-responsive'
 
 const Dashboard = () => {
     const { data: session } = useSession();
@@ -15,6 +16,14 @@ const Dashboard = () => {
     const [statsData, setStatsData] = useState(null);
     const [callsData, setCallsData] = useState(null);
     const [userName, setUserName] = useState("{{Name}}");
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    const isMobile = useMediaQuery({ maxWidth: 767 });
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         if (!session?.user) return;
@@ -111,31 +120,45 @@ const Dashboard = () => {
         }
     ];
 
+    if (!mounted) return null;
+
     return (
-        <div className="grid grid-cols-[262px_1fr] min-h-screen bg-gray-50/50">
-            <div className="sticky top-0 h-screen">
-                <Sidebar />
-            </div>
-            <div className="flex flex-col min-h-screen overflow-hidden">
-                <Navbar />
-                <main className="flex-1 p-[30px] bg-white">
-                    <div className="w-full max-w-[1180px] mx-auto flex items-start justify-between px-8">
+        <div className={`flex min-h-screen bg-gray-50/50 ${isMobile ? 'flex-col' : 'grid grid-cols-[262px_1fr]'}`}>
+            {!isMobile ? (
+                <div className="sticky top-0 h-screen">
+                    <Sidebar />
+                </div>
+            ) : (
+                isSidebarOpen && (
+                    <div className="fixed inset-0 z-50 flex">
+                        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsSidebarOpen(false)}></div>
+                        <div className="relative w-[262px] h-full z-50">
+                            <Sidebar isMobile={isMobile} onClose={() => setIsSidebarOpen(false)} />
+                        </div>
+                    </div>
+                )
+            )}
+            
+            <div className="flex flex-col min-h-screen overflow-hidden flex-1 w-full">
+                <Navbar isMobile={isMobile} onMenuClick={() => setIsSidebarOpen(true)} />
+                <main className={`flex-1 ${isMobile ? 'p-5' : 'p-[30px]'} bg-white`}>
+                    <div className={`w-full max-w-[1180px] mx-auto flex ${isMobile ? 'flex-col gap-4' : 'items-start justify-between px-8'}`}>
                         <div className="flex flex-col gap-1 ">
-                            <h2 className="text-[22px] font-bold text-gray-900 tracking-tight flex items-center">
+                            <h2 className={`${isMobile ? 'text-[18px]' : 'text-[22px]'} font-bold text-gray-900 tracking-tight flex items-center`}>
                                 Hi, {userName} 👋 Welcome to Hintro
                             </h2>
-                            <p className="text-[13px] text-gray-600">
+                            <p className={`${isMobile ? 'text-[12px]' : 'text-[13px]'} text-gray-600`}>
                                 Ready to make your next call smarter ?
                             </p>
                         </div>
                         
-                        <Button variant="primary" className="h-[40px] px-5 rounded-md text-sm">
-                            Start New Call
+                        <Button variant={isMobile ? "default" : "primary"} className={`h-10 rounded-md ${isMobile ? 'w-25 text-xs bg-black text-white hover:bg-gray-800' : 'px-5 text-sm'}`}>
+                            Start Call
                         </Button>
                     </div>
 
-                    <div className="w-full mt-[30px] px-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className={`w-full ${isMobile ? 'mt-6' : 'mt-7.5 px-8'}`}>
+                        <div className={`grid ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'}`}>
                             {stats.map((stat, index) => (
                                 <StatCard 
                                     key={index}
@@ -148,8 +171,8 @@ const Dashboard = () => {
                             ))}
                         </div>
                     </div>
-                    <div className="w-full mt-10 px-8 flex flex-col items-center">
-                        <h3 className="text-xl font-medium text-gray-900 mb-3.5 w-full max-w-[802px] text-center">
+                    <div className={`w-full ${isMobile ? 'mt-8' : 'mt-10 px-8'} flex flex-col items-center`}>
+                        <h3 className={`${isMobile ? 'text-[16px] text-center' : 'text-xl text-center'} font-medium text-gray-900 mb-3.5 w-full max-w-[802px]`}>
                             Recent calls
                         </h3>
                         

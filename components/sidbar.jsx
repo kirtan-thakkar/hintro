@@ -8,9 +8,10 @@ import {
   ArchiveRestore,
   Gift,
   Info,
+  X,
 } from "lucide-react";
 
-export default function Sidebar() {
+export default function Sidebar({ isMobile, onClose }) {
   const navItems = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard, isActive: true },
     { href: "/insights", label: "Call Insights", icon: Phone },
@@ -34,10 +35,15 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-[262px] h-screen bg-white border-r border-[#E2E2E8] flex flex-col font-sans shrink-0 divide-y divide-[#E2E2E8]">
+    <div className={`w-[262px] h-screen bg-white border-r border-[#E2E2E8] flex flex-col font-sans shrink-0 divide-y divide-[#E2E2E8] ${isMobile ? 'shadow-2xl' : ''}`}>
       {/* Header */}
-      <div className="w-full h-[64px] shrink-0 flex items-center justify-center">
-        <span className="text-xl font-bold text-gray-900">Hintro</span>
+      <div className={`w-full h-[64px] shrink-0 flex items-center ${isMobile ? 'px-4' : 'justify-center'}`}>
+        {isMobile && (
+          <button onClick={onClose} className="p-1 mr-3 text-gray-700 hover:bg-gray-100 rounded-md">
+            <X className="w-5 h-5" />
+          </button>
+        )}
+        <span className={`text-xl font-bold text-gray-900 ${isMobile ? '' : ''}`}>Hintro</span>
       </div>
 
       {/* Main Navigation */}
