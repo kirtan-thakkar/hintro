@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Phone,
@@ -17,18 +18,19 @@ import { FeedbackModal } from "./feedback-modal";
 
 export default function Sidebar({ isMobile, onClose }) {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const pathname = usePathname();
 
   const navItems = [
-    { href: "/", label: "Dashboard", icon: LayoutDashboard, isActive: true },
-    { href: "/insights", label: "Call Insights", icon: Phone },
+    { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/#insights", label: "Call Insights", icon: Phone },
     {
-      href: "/knowledge",
+      href: "/#knowledge",
       label: "Knowledge Base",
       icon: BookOpen,
       hasInfo: true,
     },
-    { href: "/prompts", label: "Prompts", icon: MessageSquare, hasInfo: true },
-    { href: "/boxy", label: "Boxy Controls", icon: Box, hasInfo: true },
+    { href: "/#prompts", label: "Prompts", icon: MessageSquare, hasInfo: true },
+    { href: "/#boxy", label: "Boxy Controls", icon: Box, hasInfo: true },
   ];
 
   const bottomNavItems = [
@@ -61,13 +63,21 @@ export default function Sidebar({ isMobile, onClose }) {
         <div className="flex-1 pt-[26px]">
             <nav className="pl-[30px] pr-[20px] flex flex-col gap-[6px]">
               {navItems.map((item) => (
-                <SidebarItem key={item.label} {...item} />
+                <SidebarItem 
+                  key={item.label} 
+                  {...item} 
+                  isActive={pathname === item.href}
+                />
               ))}
             </nav>
           </div>
           <div className="pt-[16px] pb-6 px-[20px] flex flex-col gap-2">
             {bottomNavItems.map((item) => (
-              <SidebarItem key={item.label} {...item} />
+              <SidebarItem 
+                key={item.label} 
+                {...item} 
+                isActive={pathname === item.href}
+              />
             ))}
             <button className="mt-2 w-[137px] h-[40px] bg-gray-500 hover:bg-gray-600 text-white font-medium text-sm rounded-full transition-colors ml-[10px]">
               Upgrade

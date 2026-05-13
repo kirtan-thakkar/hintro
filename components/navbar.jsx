@@ -5,7 +5,7 @@ import { Play, ChevronDown, LogOut, Menu } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { LogoutModal } from './logout-modal';
 
-export function Navbar({ isMobile, onMenuClick }) {
+export function Navbar({ isMobile, onMenuClick, title = "Dashboard" }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -42,7 +42,7 @@ export function Navbar({ isMobile, onMenuClick }) {
 
         {/* Page Title */}
         <h1 className={`text-lg font-semibold text-gray-900 font-sans ${isMobile ? 'absolute left-1/2 -translate-x-1/2' : ''}`}>
-          Dashboard
+          {title}
         </h1>
         
         {/* Right side - Actions & Profile */}

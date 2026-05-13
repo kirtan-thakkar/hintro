@@ -27,7 +27,42 @@ export function FeedbackModal({ isOpen, onClose }) {
   if (!isOpen || !mounted) return null;
 
   const handleSubmit = () => {
-    // Implement submit logic here
+    const dateObj = new Date();
+    const day = dateObj.getDate();
+    const getOrdinal = (n) => {
+      if (n > 3 && n < 21) return 'th';
+      switch (n % 10) {
+        case 1:  return "st";
+        case 2:  return "nd";
+        case 3:  return "rd";
+        default: return "th";
+      }
+    };
+    const month = dateObj.toLocaleString('en-US', { month: 'short' });
+    const year = dateObj.getFullYear();
+    const dateStr = `${day}${getOrdinal(day)} ${month} ${year}`;
+    
+    const timeStr = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase();
+
+    const newFeedback = {
+      id: Date.now(),
+      title: "Feedback Title",
+      rating: rating,
+      description: feedbackText,
+      date: dateStr,
+      time: timeStr
+    };
+
+    try {
+      const existingFeedbacks = JSON.parse(localStorage.getItem('hintro_feedbacks') || '[]');
+      localStorage.setItem('hintro_feedbacks', JSON.stringify([newFeedback, ...existingFeedbacks]));
+      
+      // Dispatch a custom event to notify other components that feedback has been added
+      window.dispatchEvent(new Event('feedback_added'));
+    } catch (e) {
+      console.error("Error saving feedback", e);
+    }
+
     setIsSubmitted(true);
   };
 

@@ -18,6 +18,7 @@ const Dashboard = () => {
     const [userName, setUserName] = useState("{{Name}}");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
 
     const isMobile = useMediaQuery({ maxWidth: 767 });
 
@@ -49,7 +50,7 @@ const Dashboard = () => {
                 }
 
                 // Fetch call history
-                const callsRes = await fetch('/api/call-sessions?limit=10', {
+                const callsRes = await fetch('/api/call-sessions?limit=5', {
                     headers: { 'x-user-id': session.user.id },
                 });
                 if (callsRes.ok) {
@@ -64,6 +65,54 @@ const Dashboard = () => {
 
         fetchData();
     }, [session?.user?.id]);
+
+    const loadMoreCalls = async () => {
+        if (!callsData?.pagination?.hasNextPage || !session?.user?.id) return;
+        setIsLoadingMore(true);
+        try {
+            const nextPage = callsData.pagination.page + 1;
+            const callsRes = await fetch(`/api/call-sessions?limit=5&page=${nextPage}`, {
+                headers: { 'x-user-id': session.user.id },
+            });
+            if (callsRes.ok) {
+                const data = await callsRes.json();
+                setCallsData(prev => ({
+                    ...data,
+                    callSessions: [...(prev?.callSessions || []), ...(data.callSessions || [])]
+                }));
+            }
+        } catch (error) {
+            console.error('Failed to load more calls:', error);
+        } finally {
+            setIsLoadingMore(false);
+        }
+    };
+
+    const groupCallsByDate = (calls) => {
+        if (!calls) return {};
+        const grouped = {};
+        calls.forEach(call => {
+            const dateObj = new Date(call.started_at);
+            const day = dateObj.getDate();
+            const getOrdinal = (n) => {
+                if (n > 3 && n < 21) return 'th';
+                switch (n % 10) {
+                    case 1:  return "st";
+                    case 2:  return "nd";
+                    case 3:  return "rd";
+                    default: return "th";
+                }
+            };
+            const month = dateObj.toLocaleString('en-US', { month: 'long' });
+            const dateStr = `${month} ${day}${getOrdinal(day)}`;
+
+            if (!grouped[dateStr]) {
+                grouped[dateStr] = [];
+            }
+            grouped[dateStr].push(call);
+        });
+        return grouped;
+    };
 
     const formatDuration = (seconds) => {
         if (!seconds) return "0s";
@@ -181,16 +230,35 @@ const Dashboard = () => {
                                 <p className="text-gray-500">Loading...</p>
                             </div>
                         ) : callsData?.callSessions && callsData.callSessions.length > 0 ? (
-                            <div className="w-full max-w-[802px] space-y-2">
-                                {callsData.callSessions.map((call) => (
-                                    <CallItem
-                                        key={call._id}
-                                        initial={call.client?.[0] || "D"}
-                                        title={call.description || call.client}
-                                        time={formatTime(call.started_at)}
-                                        interactions={call.ai_interactions}
-                                    />
+                            <div className="w-full max-w-[802px] space-y-4 pb-10">
+                                {Object.entries(groupCallsByDate(callsData.callSessions)).map(([date, calls]) => (
+                                    <div key={date} className="flex flex-col">
+                                        <h4 className="text-[13px] font-medium text-gray-400 mb-2 px-2">{date}</h4>
+                                        <div className="flex flex-col border border-transparent">
+                                            {calls.map((call) => (
+                                                <CallItem
+                                                    key={call._id}
+                                                    initial={call.client?.[0] || "D"}
+                                                    title={call.description || call.client}
+                                                    time={formatTime(call.started_at)}
+                                                    interactions={call.ai_interactions}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
                                 ))}
+                                {callsData.pagination?.hasNextPage && (
+                                    <div className="flex justify-center mt-4 pt-2">
+                                        <Button 
+                                            variant="outline" 
+                                            onClick={loadMoreCalls} 
+                                            disabled={isLoadingMore}
+                                            className="text-sm px-6 py-2 border-gray-300 text-gray-600 hover:bg-gray-50"
+                                        >
+                                            {isLoadingMore ? "Loading..." : "Load More"}
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="w-full max-w-[802px] h-[219px] border border-neutral-200 rounded-2xl bg-white flex flex-col items-center justify-center p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
