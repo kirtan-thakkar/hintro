@@ -73,7 +73,7 @@ components/             # React components
 
 **Responsive Strategy:**
 - **React-Responsive:** `useMediaQuery` hook for conditional layouts (maxWidth: 767px = mobile breakpoint)
-- **Tailwind:** Utility-first with base styles; no custom CSS needed
+- **Tailwind:** Utility-first with base styles
 - **Mobile-first:** Sidebar collapses to hamburger menu; top nav title centers; drawer overlays content
 - **Device Detection:** isMobile state prevents hydration mismatches via `mounted` flag
 
@@ -98,44 +98,24 @@ components/             # React components
 - Error handling: silent fails with fallback UI (empty states)
 
 **Styling:**
-- Tailwind CSS only (no inline styles)
-- Semantic HTML with ARIA attributes
-- Focus states: `focus-visible:ring-2 focus-visible:ring-gray-400`
-- Hover/transition states: `transition-colors`, `transition-all`
+- Tailwind CSS 
 
 **Error Handling:**
 - Try-catch for async operations
 - User-friendly error messages in UI
-- Console logging for debugging
 - Fallback states for failed data fetches
 
-## Deployment
-
-**Prepared for:**
-- Vercel (native Next.js support) - recommended
-- Node.js servers (via `npm start` after build)
-- Docker containerization
-
 **Requirements:**
-- `AUTH_SECRET` environment variable (production must use strong secret)
+- `AUTH_SECRET` environment variable
 - Backend API endpoint (currently pointing to mock)
 - Node.js 18+ (for React 19 and Next.js 16 compatibility)
 
-**Pre-deployment:**
-- Run `npm run lint` to catch issues
-- Test on mobile (767px breakpoint)
-- Verify auth flow (both user IDs: u1, u2)
-- Test API calls with real backend if migrating
 
 ## Key Assumptions
 
 1. **Single User Session:** No multi-user tenant isolation needed
-2. **Mock Data:** Development uses mock API; production needs real backend swap
-3. **Browser Support:** Modern browsers (ES2020+); no IE11 support
-4. **Screen Sizes:** Optimized for 1920px+ desktop and 375px+ mobile
-5. **No Server-Side Rendering:** Dashboard always client-side rendered (performance via React Compiler)
-6. **State Scope:** All data fetches are per-component; no global state (Redux/Zustand not needed)
-7. **Authentication Persistence:** Session managed by NextAuth; relies on HTTP-only cookies
-8. **API Rate Limiting:** Assumes backend handles; no client-side throttling implemented
+2. **Mock Data:** Development uses mock API; 
+3. **No Server-Side Rendering:** Dashboard always client-side rendered
+4. **State Scope:** All data fetches are per-component; no global state 
 
 
