@@ -48,9 +48,9 @@ export default function Sidebar({ isMobile, onClose }) {
 
   return (
     <>
-      <div className={`w-[262px] h-screen bg-white border-r border-[#E2E2E8] flex flex-col font-sans shrink-0 divide-y divide-[#E2E2E8] ${isMobile ? 'shadow-2xl' : ''}`}>
+      <div className={`w-65.5 h-screen bg-white border-r border-border flex flex-col font-sans shrink-0 divide-y divide-border ${isMobile ? 'shadow-2xl' : ''}`}>
         {/* Header */}
-        <div className={`w-full h-[64px] shrink-0 flex items-center ${isMobile ? 'px-4' : 'justify-center'}`}>
+        <div className={`w-full h-16 shrink-0 flex items-center ${isMobile ? 'px-4' : 'justify-center'}`}>
           {isMobile && (
             <button onClick={onClose} className="p-1 mr-3 text-gray-700 hover:bg-gray-100 rounded-md">
               <X className="w-5 h-5" />
@@ -60,8 +60,8 @@ export default function Sidebar({ isMobile, onClose }) {
         </div>
 
         {/* Main Navigation */}
-        <div className="flex-1 pt-[26px]">
-            <nav className="pl-[30px] pr-[20px] flex flex-col gap-[6px]">
+        <div className="flex-1 pt-6">
+            <nav className="pl-7 pr-5 flex flex-col gap-2">
               {navItems.map((item) => (
                 <SidebarItem 
                   key={item.label} 
@@ -71,7 +71,7 @@ export default function Sidebar({ isMobile, onClose }) {
               ))}
             </nav>
           </div>
-          <div className="pt-[16px] pb-6 px-[20px] flex flex-col gap-2">
+          <div className="pt-4 pb-6 px-5 flex flex-col gap-2">
             {bottomNavItems.map((item) => (
               <SidebarItem 
                 key={item.label} 
@@ -79,7 +79,7 @@ export default function Sidebar({ isMobile, onClose }) {
                 isActive={pathname === item.href}
               />
             ))}
-            <button className="mt-2 w-[137px] h-[40px] bg-gray-500 hover:bg-gray-600 text-white font-medium text-sm rounded-full transition-colors ml-[10px]">
+            <button className="mt-2 w-34 h-10 bg-gray-500 hover:bg-gray-600 text-white font-medium text-sm rounded-full transition-colors ml-2.5">
               Upgrade
             </button>
           </div>
@@ -104,7 +104,7 @@ function SidebarItem({ href, label, icon: Icon, isActive, hasInfo, onClick }) {
     </>
   );
 
-  const className = `w-full flex items-center justify-between px-[10px] py-[8px] rounded-md font-medium text-sm transition-colors ${
+  const className = `w-full flex items-center justify-between px-2.5 py-2 rounded-md font-medium text-sm transition-colors ${
     isActive
       ? "bg-blue-50 text-blue-600 hover:bg-blue-100"
       : "text-gray-600 hover:bg-gray-50"

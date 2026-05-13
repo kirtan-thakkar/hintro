@@ -32,7 +32,7 @@ export function Navbar({ isMobile, onMenuClick, title = "Dashboard" }) {
 
   return (
     <>
-      <header className={`h-[64px] w-full bg-white border-b border-[#E2E2E8] flex items-center shrink-0 ${isMobile ? 'px-5 justify-between relative' : 'justify-between px-[30px]'}`}>
+      <header className={`h-[64px] w-full bg-white border-b border-border flex items-center shrink-0 ${isMobile ? 'px-5 justify-between relative' : 'justify-between px-[30px]'}`}>
         {/* Left side - Menu (Mobile only) */}
         {isMobile && (
           <button onClick={onMenuClick} className="p-1 -ml-1 text-gray-700 hover:bg-gray-100 rounded-md z-10">

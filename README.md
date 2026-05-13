@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Hintro Dashboard
 
-## Getting Started
+AI-powered conversation assistant dashboard for analyzing and improving calls.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework:** Next.js 16.2.6 (App Router) - routing, Server Actions, API routes
+- **UI/Styling:** Tailwind CSS 4, DM_Sans (Google Fonts)
+- **Authentication:** Auth.js v5 (NextAuth) - credential-based login with JWT callbacks
+- **State Management:** React Hooks (`useState`, `useEffect`) - local state only
+- **Responsive Design:** React-Responsive 10.0.1 - media queries and conditional rendering
+- **Icons:** Lucide React 1.14.0
+
+## Setup & Run
 
 ```bash
+# Install dependencies
+npm install
+
+# Set environment
+# AUTH_SECRET=<your-secret> 
+
+# Development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Production build
+npm build
+npm start
+
+# Linting
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Server runs on `http://localhost:3000`. Mock API serves dashboard data based on user ID (`u1` = empty state, `u2` = populated data).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Folder Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/                    # Next.js App Router
+├── api/                # Route handlers (auth, call-sessions)
+├── login/              # Auth flow (Server Actions, forms)
+├── feedback-history/   # Feedback page
+├── layout.jsx          # Root layout with Providers
+├── page.jsx            # Dashboard entry point
+└── globals.css         # Tailwind imports
 
-## Learn More
+components/             # React components
+├── ui/                 # Reusable base elements (button, stat-card, call-item)
+├── dashboard.jsx       # Main dashboard logic
+├── navbar.jsx          # Header with user menu
+├── sidebar.jsx         # Navigation drawer
+├── feedback-modal.jsx  # Feedback form modal
+├── feedback-history.jsx # History page component
+├── logout-modal.jsx    # Logout confirmation
+└── info-tooltip.jsx    # Tooltip utility
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Design Implementation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Approach:** Pixel-perfect translation of Figma design with strict adherence to specs.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Implementation Strategy:**
+- Extracted color palette, typography, and spacing from Figma
+  - **Font:** DM_Sans (weights: 400, 500, 700)
+  - **Borders:** #E2E2E8 (1px)
+  - **Shadows:** `0_1px_2px_rgba(0,0,0,0.02)` for subtle depth
+  - **Spacing:** 4px grid system via Tailwind
+- Component-level precision
+  - StatCard: 80px height, 42px icon containers with fixed padding/gaps
+  - Button variants: primary (black), outline, secondary (gray)
+  - Navbar: 64px height with responsive title positioning
+  - Sidebar: 262px fixed width on desktop, full-screen drawer on mobile
 
-## Deploy on Vercel
+**Responsive Strategy:**
+- **React-Responsive:** `useMediaQuery` hook for conditional layouts (maxWidth: 767px = mobile breakpoint)
+- **Tailwind:** Utility-first with base styles; no custom CSS needed
+- **Mobile-first:** Sidebar collapses to hamburger menu; top nav title centers; drawer overlays content
+- **Device Detection:** isMobile state prevents hydration mismatches via `mounted` flag
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Conventions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Component Architecture:**
+- `/ui` folder: Single-responsibility, composition-ready components (Button, StatCard, CallItem)
+- Page components: Handle business logic, data fetching, state management
+- All client-side components: `"use client"` directive at top
+- Props drilling over context: Keeps dependencies explicit for small app scale
+
+**Authentication:**
+- Next Auth with Credentials provider (mock emails: `u1@email.com`, `u2@email.com`)
+- JWT callbacks for session enrichment
+- Protected routes via `auth()` middleware wrapper in `proxy.js`
+- Redirect to `/login` on auth failure
+
+**Data Fetching:**
+- `fetch()` API inside `useEffect()` 
+- User ID passed via `x-user-id` header (extracted from session)
+- Mock backend integration for development
+- Error handling: silent fails with fallback UI (empty states)
+
+**Styling:**
+- Tailwind CSS only (no inline styles)
+- Semantic HTML with ARIA attributes
+- Focus states: `focus-visible:ring-2 focus-visible:ring-gray-400`
+- Hover/transition states: `transition-colors`, `transition-all`
+
+**Error Handling:**
+- Try-catch for async operations
+- User-friendly error messages in UI
+- Console logging for debugging
+- Fallback states for failed data fetches
+
+## Deployment
+
+**Prepared for:**
+- Vercel (native Next.js support) - recommended
+- Node.js servers (via `npm start` after build)
+- Docker containerization
+
+**Requirements:**
+- `AUTH_SECRET` environment variable (production must use strong secret)
+- Backend API endpoint (currently pointing to mock)
+- Node.js 18+ (for React 19 and Next.js 16 compatibility)
+
+**Pre-deployment:**
+- Run `npm run lint` to catch issues
+- Test on mobile (767px breakpoint)
+- Verify auth flow (both user IDs: u1, u2)
+- Test API calls with real backend if migrating
+
+## Key Assumptions
+
+1. **Single User Session:** No multi-user tenant isolation needed
+2. **Mock Data:** Development uses mock API; production needs real backend swap
+3. **Browser Support:** Modern browsers (ES2020+); no IE11 support
+4. **Screen Sizes:** Optimized for 1920px+ desktop and 375px+ mobile
+5. **No Server-Side Rendering:** Dashboard always client-side rendered (performance via React Compiler)
+6. **State Scope:** All data fetches are per-component; no global state (Redux/Zustand not needed)
+7. **Authentication Persistence:** Session managed by NextAuth; relies on HTTP-only cookies
+8. **API Rate Limiting:** Assumes backend handles; no client-side throttling implemented
+
+

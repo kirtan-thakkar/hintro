@@ -11,7 +11,7 @@ export function CallItem({
   return (
     <div className="w-full flex items-center justify-between py-3 px-4 border border-transparent hover:bg-gray-50 rounded-lg group transition-colors cursor-pointer">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded bg-[#A855F7] text-white flex flex-col items-center justify-center font-medium text-sm shrink-0">
+        <div className="w-8 h-8 rounded bg-accent text-white flex flex-col items-center justify-center font-medium text-sm shrink-0">
           {initial}
         </div>
         

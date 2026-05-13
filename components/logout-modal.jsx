@@ -14,8 +14,8 @@ export function LogoutModal({ isOpen, onClose, onConfirm }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className={`${isMobile ? 'w-full max-w-[340px] p-[24px]' : 'w-[420px] p-[32px]'} h-[229px] bg-[#FFFFFF] rounded-[8px] flex flex-col gap-[10px] shadow-2xl`}>
-        <div className="border-b border-neutral-200 pb-[10px]">
+      <div className={`${isMobile ? 'w-full max-w-85 p-6' : 'w-105 p-8'} h-57 bg-background rounded-lg flex flex-col gap-2 shadow-2xl`}>
+        <div className="border-b border-border pb-2.5">
           <h3 className="text-[20px] font-semibold text-gray-900 tracking-tight">
             Leaving already?
           </h3>

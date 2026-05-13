@@ -14,8 +14,8 @@ export function NavItem({
       href={href} 
       className={`w-full flex items-center justify-between px-[10px] py-[8px] rounded-md font-medium text-sm transition-colors ${
         isActive 
-          ? 'bg-[#F0F4FF] text-[#2563EB] hover:bg-[#E0E7FF]' 
-          : 'text-[#475569] hover:bg-[#F1F5F9]'
+          ? 'bg-blue-50 text-primary hover:bg-blue-100' 
+          : 'text-muted-foreground hover:bg-muted'
       } ${className}`}
     >
       <div className="flex items-center gap-2">
