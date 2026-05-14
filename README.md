@@ -55,20 +55,14 @@ components/             # React components
 └── info-tooltip.jsx    # Tooltip utility
 ```
 
-## Design Implementation
-
-**Approach:** Pixel-perfect translation of Figma design with strict adherence to specs.
-
 **Implementation Strategy:**
-- Extracted color palette, typography, and spacing from Figma
   - **Font:** DM_Sans (weights: 400, 500, 700)
   - **Borders:** #E2E2E8 (1px)
   - **Shadows:** `0_1px_2px_rgba(0,0,0,0.02)` for subtle depth
-  - **Spacing:** 4px grid system via Tailwind
 - Component-level precision
   - StatCard: 80px height, 42px icon containers with fixed padding/gaps
   - Button variants: primary (black), outline, secondary (gray)
-  - Navbar: 64px height with responsive title positioning
+  - Navbar: 64px height 
   - Sidebar: 262px fixed width on desktop, full-screen drawer on mobile
 
 **Responsive Strategy:**
@@ -95,14 +89,14 @@ components/             # React components
 - `fetch()` API inside `useEffect()` 
 - User ID passed via `x-user-id` header (extracted from session)
 - Mock backend integration for development
-- Error handling: silent fails with fallback UI (empty states)
+- Error handling: beautifully fails with fallback UI (empty states)
 
 **Styling:**
 - Tailwind CSS 
 
 **Error Handling:**
 - Try-catch for async operations
-- User-friendly error messages in UI
+- error messages in UI
 - Fallback states for failed data fetches
 
 **Requirements:**
