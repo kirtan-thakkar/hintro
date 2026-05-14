@@ -1,6 +1,7 @@
 # Hintro Dashboard
 
 AI-powered conversation assistant dashboard for analyzing and improving calls.
+Link to deployed version - https://hintro-sooty.vercel.app
 
 ## Tech Stack
 
